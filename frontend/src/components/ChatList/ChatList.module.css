@@ -1,0 +1,55 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: #213547;
+}
+
+.header {
+  padding: 16px;
+  border-bottom: 1px solid #dee2e6;
+  background: #f8f9fa;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #213547;
+}
+
+.filename {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.empty {
+  padding: 20px;
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.addButton {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 2px dashed #dee2e6;
+  border-radius: 8px;
+  background: transparent;
+  color: #6c757d;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.addButton:hover {
+  border-color: #007bff;
+  color: #007bff;
+  background: rgba(0, 123, 255, 0.1);
+} 

@@ -1,0 +1,139 @@
+.bubble {
+  position: relative;
+  margin: 0.5rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: #f8fafc;
+  width: 90%;
+}
+
+.bubble:hover {
+  background-color: #f1f5f9;
+  transform: translateX(5px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.selected {
+  background-color: #f0f9ff;
+  border: 1px solid #e0f2fe;
+}
+
+.selected:hover {
+  background-color: #e0f2fe;
+}
+
+/* 不同角色的气泡样式 */
+.system {
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #f8fafc;
+}
+
+.user {
+  margin-left: auto;
+  background-color: #eff6ff;
+}
+
+.assistant {
+  margin-right: auto;
+  background-color: #f0fdf4;
+}
+
+.role {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.roleIcon {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+
+.bubble:hover .roleIcon {
+  transform: scale(1.2);
+}
+
+.system .roleIcon {
+  background-color: #64748b;
+}
+
+.user .roleIcon {
+  background-color: #3b82f6;
+}
+
+.assistant .roleIcon {
+  background-color: #10b981;
+}
+
+.preview {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.deleteButton {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  color: #94a3b8;
+  font-size: 1.25rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s ease;
+  border-radius: 50%;
+  padding: 0;
+  transform: scale(0.8);
+}
+
+.bubble:hover .deleteButton {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.deleteButton:hover {
+  background-color: #fee2e2;
+  color: #ef4444;
+  transform: scale(1.1);
+}
+
+/* 角色名称样式 */
+.roleName {
+  text-transform: capitalize;
+  transition: color 0.2s ease;
+}
+
+.bubble:hover .roleName {
+  color: #1e293b;
+}
+
+/* 选中状态的特殊效果 */
+.selected.system {
+  background-color: #f8fafc;
+  box-shadow: 0 0 0 1px #64748b;
+}
+
+.selected.user {
+  background-color: #eff6ff;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.selected.assistant {
+  background-color: #f0fdf4;
+  box-shadow: 0 0 0 1px #10b981;
+} 

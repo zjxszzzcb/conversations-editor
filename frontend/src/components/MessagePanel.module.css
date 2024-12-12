@@ -1,0 +1,47 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.content {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+}
+
+.content > * {
+  flex: 1;
+  overflow: auto;
+}
+
+.actions {
+  display: flex;
+  gap: 4px;
+}
+
+.iconButton {
+  padding: 4px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  transition: all 0.2s;
+}
+
+.iconButton:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+} 
