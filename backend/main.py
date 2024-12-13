@@ -1,3 +1,5 @@
+import traceback
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -67,9 +69,21 @@ async def set_directory(request: DirectoryRequest):
                 except Exception as e:
                     print(f"[SET_DIRECTORY] Skipping invalid file {file_path}: {str(e)}")
                     continue
-        
         print(f"[SET_DIRECTORY] Found {len(files)} valid files")
+
+        def sort_value(file_path: str):
+            try:
+                return int(os.path.basename(file_path.split('.')[0]))
+            except:
+                traceback.print_exc()
+                return 1e9
+        try:
+            files.sort(key=sort_value)
+        except Exception:
+            traceback.print_exc()
+
         return {"files": files}
+
     except Exception as e:
         print(f"[SET_DIRECTORY] Error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))

@@ -17,21 +17,12 @@ export class FileService {
       
       const { files } = await response.json();
       this.currentDirectory = path;
-      this.files = this.sortFiles(files);
+      this.files = files;
       this.currentIndex = this.files.length > 0 ? 0 : -1;
     } catch (error) {
       console.error('Error setting directory:', error);
       throw error;
     }
-  }
-
-  private sortFiles(files: string[]): string[] {
-    // 前端处理文件排序逻辑
-    return [...files].sort((a, b) => {
-      const aName = this.getBaseName(a);
-      const bName = this.getBaseName(b);
-      return aName.localeCompare(bName);
-    });
   }
 
   private getBaseName(path: string): string {
@@ -163,13 +154,11 @@ export class FileService {
       if (!response.ok) throw new Error('Failed to refresh directory');
       
       const { files } = await response.json();
-      this.files = this.sortFiles(files);
+      this.files = files;
       
-      // 如果当前没有文件，重置索引
       if (this.files.length === 0) {
         this.currentIndex = -1;
       } else {
-        // 确保当前索引不超出范围
         this.currentIndex = Math.min(this.currentIndex, this.files.length - 1);
       }
     } catch (error) {
@@ -212,7 +201,7 @@ export class FileService {
       if (!response.ok) throw new Error('Failed to rename files');
 
       const { files } = await response.json();
-      this.files = this.sortFiles(files);
+      this.files = files;
       
       // 更新当前索引对应的文件路径
       if (this.currentIndex >= 0) {
