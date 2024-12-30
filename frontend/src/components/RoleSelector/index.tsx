@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './RoleSelector.module.css';
 
 interface RoleSelectorProps {
-  onSelect: (role: 'system' | 'user' | 'assistant') => void;
+  onSelect: (role: 'system' | 'user' | 'assistant' | 'negative') => void;
   onCancel: () => void;
 }
 
@@ -29,6 +29,12 @@ export const RoleSelector: React.FC<RoleSelectorProps> = ({ onSelect, onCancel }
             onClick={() => onSelect('assistant')}
           >
             Assistant
+          </button>
+          <button 
+            className={`${styles.button} ${styles.negative}`}
+            onClick={() => onSelect('negative')}
+          >
+            Negative
           </button>
         </div>
         <button className={styles.cancelButton} onClick={onCancel}>

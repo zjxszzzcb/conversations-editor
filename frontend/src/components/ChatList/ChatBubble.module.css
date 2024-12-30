@@ -136,4 +136,18 @@
 .selected.assistant {
   background-color: #f0fdf4;
   box-shadow: 0 0 0 1px #10b981;
+}
+
+.negative {
+  margin-right: auto;
+  background-color: #fef2f2;
+}
+
+.negative .roleIcon {
+  background-color: #ef4444;
+}
+
+.selected.negative {
+  background-color: #fef2f2;
+  box-shadow: 0 0 0 1px #ef4444;
 } 

@@ -52,6 +52,10 @@
   background: #4caf50;
 }
 
+.negative {
+  background: #ef4444;
+}
+
 .button:hover {
   filter: brightness(1.1);
 }
