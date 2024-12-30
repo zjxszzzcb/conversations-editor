@@ -1,6 +1,7 @@
 .idea/
 __pycache__/
 
+workspace/
 backend/workspace
 
 frontend/node_modules

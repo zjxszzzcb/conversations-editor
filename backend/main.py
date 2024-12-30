@@ -11,7 +11,7 @@ from typing import List, Dict, Any
 app = FastAPI()
 
 # 配置工作目录
-WORKSPACE_DIR = "/app/workspace"
+WORKSPACE_DIR = "workspace"
 if not os.path.exists(WORKSPACE_DIR):
     os.makedirs(WORKSPACE_DIR)
 

@@ -8,6 +8,7 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=development
+      - DOCKER_ENV=true
     networks:
       - app-network
     volumes:
@@ -24,6 +25,8 @@ services:
       - "8000:8000"
     volumes:
       - ${WORKSPACE_DIR:-./workspace}:/app/workspace
+      - ./backend:/app
+    working_dir: /app
     networks:
       - app-network
     healthcheck:
