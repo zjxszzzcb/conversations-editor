@@ -11,14 +11,14 @@ from typing import List, Dict, Any
 app = FastAPI()
 
 # 配置工作目录
-WORKSPACE_DIR = "workspace"
+WORKSPACE_DIR = "/app/workspace"
 if not os.path.exists(WORKSPACE_DIR):
     os.makedirs(WORKSPACE_DIR)
 
 # 添加CORS中间件
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["*"],  # 允许所有来源，因为我们在Docker环境中
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -240,4 +240,9 @@ async def rename_files(request: RenameFilesRequest):
         return {"files": result_files}
     except Exception as e:
         print(f"[RENAME_FILES] Error: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e)) 
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
+  
