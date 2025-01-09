@@ -3,30 +3,43 @@
   flex-direction: column;
   height: 100%;
   color: #213547;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .header {
   padding: 16px;
   border-bottom: 1px solid #dee2e6;
   background: #f8f9fa;
+  flex-shrink: 0;
 }
 
 .header h2 {
   margin: 0;
   font-size: 1.2rem;
   color: #213547;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .filename {
   margin-top: 8px;
   font-size: 0.9rem;
   color: #6c757d;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .list {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 8px;
+  min-width: 0;
+  cursor: default;
+  position: relative;
 }
 
 .empty {
@@ -37,19 +50,60 @@
 }
 
 .addButton {
-  width: 100%;
+  width: calc(100% - 16px);
   padding: 10px;
-  margin: 8px 0;
+  margin: 8px;
   border: 2px dashed #dee2e6;
   border-radius: 8px;
   background: transparent;
   color: #6c757d;
   cursor: pointer;
   transition: all 0.2s;
+  box-sizing: border-box;
 }
 
 .addButton:hover {
   border-color: #007bff;
   color: #007bff;
   background: rgba(0, 123, 255, 0.1);
+}
+
+.fileIndex {
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: #6c757d;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 添加拖拽相关样式 */
+.list.dragging {
+  cursor: grabbing;
+}
+
+.list.dragging * {
+  cursor: grabbing !important;
+}
+
+.bubbleWrapper {
+  position: relative;
+  margin: 8px 0;
+  width: 100%;
+}
+
+.dropZone {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  height: 4px;
+  margin: -2px 0;
+  z-index: 1;
+  transition: all 0.2s ease;
+}
+
+.dropZone.active {
+  background-color: #3b82f6;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.5);
 } 

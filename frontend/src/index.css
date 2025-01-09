@@ -26,4 +26,28 @@ body {
 button, select {
   color: inherit;
   font-family: inherit;
+}
+
+/* Split.js 分界线样式 */
+.gutter {
+  background-color: transparent;
+}
+
+.gutter.gutter-horizontal {
+  cursor: ew-resize !important;
+  width: 8px !important;
+  background-color: transparent !important;
+  margin: 0;
+  position: relative;
+}
+
+.gutter.gutter-horizontal::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: #e5e7eb;
+  transform: translateX(-50%);
 } 

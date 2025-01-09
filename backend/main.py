@@ -1,4 +1,5 @@
 import traceback
+import shutil
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -240,6 +241,26 @@ async def rename_files(request: RenameFilesRequest):
         return {"files": result_files}
     except Exception as e:
         print(f"[RENAME_FILES] Error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/api/directory")
+async def delete_directory(request: DirectoryRequest):
+    print(f"[DELETE_DIRECTORY] Request path: {request.path}")
+    try:
+        if not os.path.abspath(request.path).startswith(os.path.abspath(WORKSPACE_DIR)):
+            raise HTTPException(status_code=400, detail="Path must be under workspace directory")
+        
+        if not os.path.exists(request.path):
+            raise HTTPException(status_code=404, detail="Directory not found")
+        
+        if not os.path.isdir(request.path):
+            raise HTTPException(status_code=400, detail="Path is not a directory")
+        
+        shutil.rmtree(request.path)
+        print(f"[DELETE_DIRECTORY] Success: directory deleted at {request.path}")
+        return {"status": "success", "path": request.path}
+    except Exception as e:
+        print(f"[DELETE_DIRECTORY] Error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/health")

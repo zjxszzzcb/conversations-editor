@@ -1,0 +1,56 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  user-select: none;
+  -webkit-user-drag: none;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.editor {
+  flex: 1;
+  overflow: auto;
+  padding: 12px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #1f2937;
+  background-color: #ffffff;
+  resize: none;
+  border: none;
+  outline: none;
+  min-height: 0;
+}
+
+.editor:disabled {
+  background-color: #f9fafb;
+  cursor: not-allowed;
+}
+
+.preview {
+  white-space: pre-wrap;
+  word-break: break-word;
+  user-select: none;
+  -webkit-user-drag: none;
+} 

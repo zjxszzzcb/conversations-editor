@@ -6,7 +6,10 @@
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background-color: #f8fafc;
-  width: 90%;
+  width: auto;
+  max-width: calc(100% - 1rem);
+  box-sizing: border-box;
+  user-select: none;
 }
 
 .bubble:hover {
@@ -29,16 +32,21 @@
   margin-left: auto;
   margin-right: auto;
   background-color: #f8fafc;
+  width: 90%;
 }
 
 .user {
   margin-left: auto;
+  margin-right: 0;
   background-color: #eff6ff;
+  width: 90%;
 }
 
 .assistant {
   margin-right: auto;
+  margin-left: 0;
   background-color: #f0fdf4;
+  width: 90%;
 }
 
 .role {
@@ -48,6 +56,7 @@
   font-size: 0.875rem;
   font-weight: 500;
   color: #4b5563;
+  min-width: 0;
 }
 
 .roleIcon {
@@ -55,6 +64,7 @@
   height: 12px;
   border-radius: 50%;
   transition: transform 0.2s ease;
+  flex-shrink: 0;
 }
 
 .bubble:hover .roleIcon {
@@ -78,6 +88,9 @@
   font-size: 0.875rem;
   color: #6b7280;
   line-height: 1.5;
+  word-break: break-word;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
 }
 
 .deleteButton {
@@ -99,6 +112,7 @@
   border-radius: 50%;
   padding: 0;
   transform: scale(0.8);
+  flex-shrink: 0;
 }
 
 .bubble:hover .deleteButton {
@@ -116,6 +130,10 @@
 .roleName {
   text-transform: capitalize;
   transition: color 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .bubble:hover .roleName {
@@ -150,4 +168,35 @@
 .selected.negative {
   background-color: #fef2f2;
   box-shadow: 0 0 0 1px #ef4444;
+}
+
+/* 拖拽相关样式 */
+.dragging {
+  opacity: 0.5;
+  transform: scale(0.98);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.bubble:hover {
+  cursor: grab;
+}
+
+.dragging:hover {
+  cursor: grabbing;
+}
+
+.bubble::before {
+  content: '⋮';
+  position: absolute;
+  left: 0.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: #94a3b8;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.bubble:hover::before {
+  opacity: 0.7;
 } 

@@ -10,6 +10,7 @@ import styles from './App.module.css';
 import debounce from 'lodash/debounce';
 import { RoleSelector } from './components/RoleSelector';
 import { MessagePanel } from './components/MessagePanel';
+import { FileTree } from './components/FileTree';
 
 export const App: React.FC = () => {
   const [currentFile, setCurrentFile] = useState<string>('');
@@ -20,6 +21,10 @@ export const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showRoleSelector, setShowRoleSelector] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [sidebarMode, setSidebarMode] = useState<'chat' | 'files'>('files');
+  const [currentDirectory, setCurrentDirectory] = useState<string | null>(null);
+  const [isReordering, setIsReordering] = useState(false);
+  const [reorderProgress, setReorderProgress] = useState(0);
 
   useEffect(() => {
     const initializeApp = async () => {
@@ -110,7 +115,7 @@ export const App: React.FC = () => {
     setCurrentFile(conv.path);
     setConversation(conv.content || { messages: [] });
     
-    // 自动选择第一��消息
+    // 自动选择第一条消息
     if (conv.content.messages.length > 0) {
       const firstMessage = conv.content.messages[0];
       setSelectedMessage(firstMessage);
@@ -158,7 +163,7 @@ export const App: React.FC = () => {
 
       const newPath = await fileService.addConversation({ messages: [] });
       
-      // ���要重新获取所有对话，因为文件列表已经在 fileService 中更新
+      // 需要重新获取所有对话，因为文件列表已经在 fileService 中更新
       const newConversation = await fileService.getCurrentConversation();
       
       setCurrentFile(newConversation.path);
@@ -228,6 +233,7 @@ export const App: React.FC = () => {
         setIsLoading(true);
         console.log('Setting directory:', path);
         await fileService.setDirectory(path);
+        setCurrentDirectory(path);
         const currentConv = await fileService.getCurrentConversation();
         
         if (currentConv && currentConv.path) {
@@ -278,19 +284,44 @@ export const App: React.FC = () => {
   };
 
   const handleRenameFiles = async () => {
+    if (isReordering) return;
+    
     try {
-      setIsLoading(true);
+      setIsReordering(true);
+      setReorderProgress(0);
+      
+      // 启动进度条动画
+      const progressInterval = setInterval(() => {
+        setReorderProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(progressInterval);
+            return 90;
+          }
+          return prev + 10;
+        });
+      }, 100);
+
       await fileService.renameFiles();
+      
+      // 完成进度条
+      setReorderProgress(100);
+      
       // 重新加载当前对话以更新文件路径
       const currentConv = await fileService.getCurrentConversation();
       if (currentConv) {
         setCurrentFile(currentConv.path);
         setConversation(currentConv.content);
       }
+
+      // 延迟重置状态
+      setTimeout(() => {
+        setIsReordering(false);
+        setReorderProgress(0);
+      }, 500);
     } catch (error) {
       handleError(error, 'Failed to rename files');
-    } finally {
-      setIsLoading(false);
+      setIsReordering(false);
+      setReorderProgress(0);
     }
   };
 
@@ -327,38 +358,144 @@ export const App: React.FC = () => {
     }
   };
 
+  const handleMessagesReorder = (newMessages: Message[]) => {
+    setConversation({ messages: newMessages });
+    setHasUnsavedChanges(true);
+  };
+
   return (
     <div className={styles.container}>
       <Split
+        direction="horizontal"
         sizes={[20, 80]}
         minSize={[200, 400]}
         gutterSize={4}
         className={styles.split}
       >
         <div className={styles.sidebar}>
-          <ChatList 
-            messages={conversation?.messages || []}
-            selectedMessage={selectedMessage}
-            onMessageSelect={setSelectedMessage}
-            onMessageDelete={handleMessageDelete}
-            currentFile={currentFile}
-            onAddMessage={handleAddMessage}
-            fileIndex={fileService.getCurrentIndex()}
-            totalFiles={fileService.getTotalFiles()}
-          />
+          <div className={styles.sidebarHeader}>
+            <button
+              className={`${styles.modeButton} ${sidebarMode === 'chat' ? styles.active : ''}`}
+              onClick={() => setSidebarMode('chat')}
+              title="Show Conversations"
+            >
+              Chat
+            </button>
+            <button
+              className={`${styles.modeButton} ${sidebarMode === 'files' ? styles.active : ''}`}
+              onClick={() => setSidebarMode('files')}
+              title="Show Files"
+            >
+              Files
+            </button>
+          </div>
+          {sidebarMode === 'files' ? (
+            <FileTree
+              onSelectDirectory={path => {
+                handleSelectDirectory(path);
+                setSidebarMode('chat');
+              }}
+              onCreateDirectory={async (parentPath, name) => {
+                try {
+                  const newPath = `${parentPath}/${name}`;
+                  const response = await fetch('/api/directory/create', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ path: newPath }),
+                  });
+
+                  if (!response.ok) {
+                    throw new Error('Failed to create directory');
+                  }
+                } catch (error) {
+                  console.error('Failed to create directory:', error);
+                }
+              }}
+              onDeleteDirectory={async (path) => {
+                try {
+                  const response = await fetch('/api/directory', {
+                    method: 'DELETE',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ path }),
+                  });
+
+                  if (!response.ok) {
+                    throw new Error('Failed to delete directory');
+                  }
+                } catch (error) {
+                  console.error('Failed to delete directory:', error);
+                }
+              }}
+              currentDirectory={currentDirectory || undefined}
+              defaultExpanded={['workspace']}
+            />
+          ) : (
+            <ChatList 
+              messages={conversation?.messages || []}
+              selectedMessage={selectedMessage}
+              onMessageSelect={setSelectedMessage}
+              onMessageDelete={handleMessageDelete}
+              currentFile={currentFile}
+              onAddMessage={handleAddMessage}
+              fileIndex={fileService.getCurrentIndex()}
+              totalFiles={fileService.getTotalFiles()}
+              onMessagesReorder={handleMessagesReorder}
+            />
+          )}
         </div>
-        
         <div className={styles.main}>
-          <Controls 
-            onSave={handleSave}
-            onNext={handleNext}
-            onPrevious={handlePrevious}
-            onNewFile={handleNewFile}
-            onDelete={handleDelete}
-            onSelectDirectory={handleSelectDirectory}
-            hasUnsavedChanges={hasUnsavedChanges}
-            onRenameFiles={handleRenameFiles}
-          />
+          <div className={styles.controls}>
+            <div className={styles.controlButtons}>
+              <div className={styles.leftButtons}>
+                <button 
+                  onClick={handleRenameFiles}
+                  className={`${styles.button} ${isReordering ? styles.processing : ''}`}
+                  title="Rename files to sequence (1.json, 2.json, ...)"
+                  disabled={isReordering}
+                >
+                  {isReordering && (
+                    <div 
+                      className={styles.progressBar} 
+                      style={{ width: `${reorderProgress}%` }} 
+                    />
+                  )}
+                  <span className={styles.buttonContent}>
+                    {isReordering ? 'Reordering...' : 'Reorder'}
+                  </span>
+                </button>
+              </div>
+              <div className={styles.navigationButtons}>
+                <button onClick={handlePrevious} className={styles.button}>
+                  ← Previous
+                </button>
+                <button onClick={handleNext} className={styles.button}>
+                  Next →
+                </button>
+              </div>
+              <div className={styles.actionButtons}>
+                <button 
+                  onClick={handleNewFile} 
+                  className={`${styles.button} ${styles.primary}`}
+                >
+                  New File
+                </button>
+                <button 
+                  onClick={handleSave} 
+                  className={`${styles.button} ${styles.primary} ${hasUnsavedChanges ? styles.hasChanges : ''}`}
+                  title="Save all changes to file"
+                >
+                  Save All
+                </button>
+                <button onClick={handleDelete} className={`${styles.button} ${styles.danger}`}>
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
           
           <Split
             direction="horizontal"
