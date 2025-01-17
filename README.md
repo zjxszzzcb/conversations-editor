@@ -25,9 +25,28 @@ npm run dev
 docker-compose up -d
 ```
 
+### Set directory
+
 ```bash
 # To specify a custom workspace directory:
 WORKSPACE_DIR=/path/to/your/workspace docker-compose up -d
+```
+
+### Failed to access Docker Hub?
+
+Run the following commands, try again.
+```bash
+# downlaod image archive
+wget https://github.com/zjxszzzcb/conversations-editor/releases/download/v1.0.0/backend.tar.gz
+wget https://github.com/zjxszzzcb/conversations-editor/releases/download/v1.0.0/frontend.tar.gz
+
+# extract
+gunzip backend.tar.gz
+gunzip frontend.tar.gz
+
+# load image
+docker load < backend.tar
+docker load < frontend.tar
 ```
 
 The services will be available at:
